@@ -1,49 +1,25 @@
-require 'simplecov'
+require 'rails/all'
+require 'lol_dba'
+require 'rspec/rails'
 
-SimpleCov.adapters.define 'rails_indexes' do
-  add_group 'Libraries', 'lib'
-  
-  add_filter 'spec'
-end
-
-SimpleCov.start 'rails_indexes' 
-
-require 'rubygems'
-require 'bundler/setup'
-
-require 'active_record'
-require 'active_support'
-require 'action_controller'
-
-require 'rails_indexes'
+ENV["RAILS_ENV"] ||= 'test'
 
 ActiveRecord::Base.establish_connection(
   :adapter  => "sqlite3",
   :database => ":memory:"
 )
 
-class Rails
+module Rails
   def self.root
-    "spec/fixtures"
+    "spec/fixtures/"
   end
 end
+Dir.glob("#{Rails.root}/app/models/*.rb").sort.each { |file| require_dependency file }
 
-RSpec.configure do |config|
-  # some (optional) config here
-  #config.fixture_path = "spec/fixtures"
-end
-
+ActiveRecord::Schema.verbose = false
 load 'fixtures/schema.rb'
-
 
 root_dir = File.dirname(__FILE__)
 
-# Load models
-Dir["#{root_dir}/fixtures/app/models/**/*.rb"].each { |f| require f}
-
-# load controllers
-Dir["#{root_dir}/fixtures/app/controllers/**/*.rb"].each { |f| require f}
-
-SimpleCov.at_exit do
-  SimpleCov.result.format!
-end
+#add current dir to the load path
+$:.unshift('.')

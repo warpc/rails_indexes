@@ -1,85 +1,86 @@
-#Rails Indexes
+#lol_dba [![travis](https://api.travis-ci.org/plentz/lol_dba.png?branch=master)](https://travis-ci.org/plentz/lol_dba)
 
-Rails indexes is a small package of 2 rake tasks that scan your application models and displays a list of columns that _probably_ should be indexed.
+lol_dba is a small package of rake tasks that scan your application models and displays a list of columns that probably should be indexed. Also, it can generate .sql migration scripts. Most of the initial code came from [rails_indexes](https://github.com/warpc/rails_indexes) and [migration_sql_generator](https://github.com/muness/migration_sql_generator).
 
-*Note:* there should be mode fields depending on your application design and custom queries.
+### Quick example
 
+To use lol_dba in the easiest way possible you have to do two things:
 
-Installation
-------------
+	gem install lol_dba
 
-Add rails_indexes to your Gemfile:
+Then run one of the following commands...
 
-    gem "rails_indexes", :git => "https://github.com/warpc/rails_indexes"
-    
-and install gem
+To display a migration for adding/removing all necessary indexes based on associations:
+
+	lol_dba db:find_indexes
+
+To generate .sql files for your migrations inside db/migrate_sql folder:
+
+	lol_dba db:migrate_sql # defaults to all migrations
+	lol_dba db:migrate_sql[pending] # only pending migrations
+	lol_dba db:migrate_sql[20120221205526] # generate sql only for migration 20120221205526
+
+### Not-so-quick example
+
+If you want to use lol_dba with rake, you should do a few more steps:
+
+Add lol_dba to your Gemfile
+
+    gem "lol_dba"
+
+Run the install command
 
     bundle install
 
-Usage
------
+Use it the same way you use other rake commands
 
-Display a migration for adding/removing all necessary indexes based on associations:
+	rake db:find_indexes
+	rake db:migrate_sql # defaults to all migrations
+	rake db:migrate_sql[pending] # only pending migrations
+	rake db:migrate_sql[20120221205526] # generate sql only for migration 20120221205526
 
-    rake db:index_migration
+### Compatibility
 
-Display a migration for adding/removing all necessary indexes based on AR::Base#find calls (including: `find`, `find_by`, `find_all_by`, `find_by_x_and_y`, `find_all_by_x_and_y`):
+Compatible with Ruby 2.x and Rails 3.x, 4.x, 5.x.
 
-    rake db:find_query_indexes
+### About primary_key
 
-*Notice:* At now moment it does not support Arel(the new Rails 3 Active Record Query Interface) calls (including: where, joins, includes, from, select...), but still usefull for indexes based on association
-
-Note that add index in big database may take a long time.
-
-Compatibility
--------------
-
-Compatible with Ruby 1.9 and Rails 3.
-
-Upcoming features/enhancements
-------------------------------
-
-  * Support Arel(the new Rails 3 Active Record Query Interface) call for `find_query_indexes` action
-  
-
-Differences from the original [rails_indexes](https://github.com/eladmeidar/rails_indexes)
--------------------------------------------
-
-  * Compatible with Ruby 1.9 and Rails 3
-  * Installing as Gem
-  * Analize `has_many :through` associations
-  * Working STI analize
-  * Good test coverage with RSpec
-  * Do not suggest add index for primary key (about reason read below)
-  
-
-About primary_key
------------------
 >The primary key is always indexed. This is generally true for all storage engines that at all supports indices.
 
-For this reason, no longer displays a gem suggestions about adding indexes to primary keys.
+For this reason, we no longer suggest to add indexes to primary keys.
 
+### Tests
 
-Tests
------
+To run lol_dba tests, just clone the repo and run:
 
-    bundle install
-    rake
-  
-to run the tests.
+    bundle install && rake
 
-Feedback
---------
+### Feedback
 
 All feedback, bug reports and thoughts on this gratefully received.
 
-Author:
-------
-Elad Meidar - [http://blog.eizesus.com](http://blog.eizesus.com)
+### Contributors
 
-Thanks:
-Eric Davis - [http://littlestreamsoftware.com](http://littlestreamsoftware.com)
+* [Diego Plentz](http://plentz.org)
+* [Elad Meidar](http://blog.eizesus.com)
+* [Eric Davis](http://littlestreamsoftware.com)
+* [Jay Fields](http://jayfields.com/)
+* [Muness Alrubaie](http://muness.blogspot.com/)
+* [Vladimir Sharshov](https://github.com/warpc)
+* [Fabio Rehm](http://fabiorehm.com/)
+* [Emanuel Imhof](http://m43nu.ch)
+* [Adrian Hooper](https://twitter.com/PaReeOhNos)
+* [Ray Zane](https://github.com/rzane)
+* [Grant Gongaware](https://github.com/ggongaware)
+* [Przemysław “Szeryf” Kowalczyk](https://szeryf.wordpress.com)
+* [Philipp Weissensteiner](http://philippweissensteiner.com)
+* [Leung Ho Kuen](https://twitter.com/PikachuEXE)
+* [Lucas Mazza](https://twitter.com/lucasmazza)
+* [Larry Reaves](https://github.com/yrral86)
+* [James Bowles](https://github.com/jamesbowles)
+* [Anderson Pierre Cardoso](https://github.com/andersoncardoso)
+* [James Bowler](https://github.com/jamesbowles)
 
-License
--------
-Released under the same license as Ruby. No Support. No Warranty, no Pain.
+### License
+
+Lol DBA is released under the MIT license.
